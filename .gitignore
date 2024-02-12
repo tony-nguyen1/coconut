@@ -37,3 +37,4 @@ build/
 ### Mac OS ###
 .DS_Store
 /.idea/
+/choco-parsers-4.0.4-with-dependencies.jar

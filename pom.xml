@@ -17,7 +17,16 @@
     </properties>
 
   <dependencies>
-
+    <dependency>
+      <groupId>com.github.concrete-cp</groupId>
+      <artifactId>concrete_2.13</artifactId>
+      <version>3.11</version>
+    </dependency>
+    <dependency>
+      <groupId>org.xcsp</groupId>
+      <artifactId>xcsp3-tools</artifactId>
+      <version>2.5</version>
+    </dependency>
     <dependency>
       <groupId>org.choco-solver</groupId>
       <artifactId>choco-solver</artifactId>
