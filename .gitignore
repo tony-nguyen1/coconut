@@ -36,3 +36,7 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Tony ###
+instances/
+.fr-rt28kN
