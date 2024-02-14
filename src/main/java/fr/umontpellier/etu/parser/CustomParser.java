@@ -14,7 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Deprecated
-public class Parser implements XCallbacks2 {
+public class CustomParser implements XCallbacks2 {
     private Implem implem = new Implem(this);
 
     @Override
@@ -30,7 +30,7 @@ public class Parser implements XCallbacks2 {
         IntVar x = model.intVar(xx.toString(),minValue,maxValue);
     }
 
-    public Parser(String filename) throws Exception {
+    public CustomParser(String filename) throws Exception {
         Document doc = Utilities.loadDocument(filename);
         XParser parser = new XParser(doc);
         parser.vEntries.stream().forEach(e -> System.out.println(e.toString()));
