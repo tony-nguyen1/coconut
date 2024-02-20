@@ -78,6 +78,8 @@ public class ZebreExtension {
 	    IntVar old = model.intVar("Old Gold", 1, 5);         
 	    IntVar par = model.intVar("Parliament", 1, 5);
 
+//        che.
+
         for (Variable v : model.getVars()) {
             if (!v.isInstantiated()) {
 //                trouveUn = true;
@@ -233,13 +235,13 @@ public class ZebreExtension {
         // Les heuristiques de bases
 //        model.getSolver().setSearch(Search.domOverWDegSearch(tabIntVar));
 //        model.getSolver().setSearch(Search.domOverWDegRefSearch(tabIntVar));
-        model.getSolver().setSearch(Search.activityBasedSearch(tabIntVar));
+//        model.getSolver().setSearch(Search.activityBasedSearch(tabIntVar));
 //        model.getSolver().setSearch(Search.conflictHistorySearch(tabIntVar));
 //        model.getSolver().setSearch(Search.randomSearch(tabIntVar,0));
 //        model.getSolver().setSearch(new ImpactBased(tabIntVar,null,0,0,0,0,true));
 
         AbstractStrategy<IntVar> maStrat = Search.intVarSearch(new CustomDomOverWDeg<>(tabIntVar, 0), new IntDomainMin(), tabIntVar);
-        model.getSolver().setSearch(maStrat);
+//        model.getSolver().setSearch(maStrat);
 
 
 

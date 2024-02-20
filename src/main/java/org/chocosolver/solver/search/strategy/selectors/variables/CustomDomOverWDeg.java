@@ -18,7 +18,7 @@ public class CustomDomOverWDeg<V extends Variable> extends DomOverWDeg<V>{
 
     @Override
     void increase(Propagator<?> prop, Element elt, double[] ws) {
-        calcLogger.info("test");
+//        calcLogger.info("test");
         super.increase(prop,elt,ws);
 
         /* Je pense que prop c'est la "contrainte" qui a engendré un conflit */
