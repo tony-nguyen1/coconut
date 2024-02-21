@@ -36,6 +36,13 @@ public class LanceurCSP {
         IMPACT,
         CHS
     }
+
+    public static void main(String[] args) throws Exception {
+        String param[] = new String[]{"/home/tony/M1/coconut/instances/Queens/Queens-m1-s1/Queens-0020-m1.xml.lzma"};
+        System.out.print(param[0]+";");
+        ChosenHeuristic h = ChosenHeuristic.DOM;
+        System.out.println(run(param,h)[0]);
+    }
     public static String[] run(String[] args,ChosenHeuristic chosenHeuristic) throws Exception {
 
         // redirection de stdout vers variable perso afin de récupérer les prints des classes que je controle pas

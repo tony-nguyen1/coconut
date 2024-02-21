@@ -11,13 +11,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class LanceurCSPs {
-    private static final int NB_REPETITIONS = 5;
+    private static final int NB_REPETITIONS = 3;
     private static final DecimalFormat df = new DecimalFormat("###.####");
     private static final ArrayList<LanceurCSP.ChosenHeuristic> heuristicList;
     static {
         LanceurCSP.ChosenHeuristic arrayChosenHeuristic[] = new LanceurCSP.ChosenHeuristic[]{
-                LanceurCSP.ChosenHeuristic.DEFAULT,
-                LanceurCSP.ChosenHeuristic.DOM,
+//                LanceurCSP.ChosenHeuristic.DOM,
                 LanceurCSP.ChosenHeuristic.DOMOVERWDEG,
                 LanceurCSP.ChosenHeuristic.CHS
         };
@@ -29,8 +28,11 @@ public class LanceurCSPs {
         Date date = new Date();
         System.out.println(dateFormat.format(date));
 
+        System.out.println(args[0]);
+
         String dirPath = args[0];
         //"/home/tony/M1/coconut/instances/Sudoku/Sudoku-alldiff-s1";
+        // /home/tony/M1/coconut/instances/TravellingSalesman-xcsp2-s25
 
         // Récupération de tous les paths de csp dans le dirPath
         File directoryPath = new File(dirPath);
