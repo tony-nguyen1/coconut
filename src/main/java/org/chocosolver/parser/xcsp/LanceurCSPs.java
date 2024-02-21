@@ -1,8 +1,10 @@
 package org.chocosolver.parser.xcsp;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 public class LanceurCSPs {
@@ -29,7 +31,19 @@ public class LanceurCSPs {
             args = new String[]{"-ansi","--log-level","SILENT","-csv",aPath};
 //            System.out.println(Arrays.stream(args).collect(Collectors.toList()));
             System.out.println(aPath);
-            LanceurCSP.main(args);
+            ArrayList<Double> tempsDeResolution = new ArrayList<>(5);
+            for (int i=0;i<5;i++) {
+                tempsDeResolution.add(Double.valueOf(LanceurCSP.run(args)[0]));
+            }
+            double tempsMin = tempsDeResolution.stream().min(Comparator.comparing(Double::valueOf)).get();
+            double tempsMax = tempsDeResolution.stream().max(Comparator.comparing(Double::valueOf)).get();
+            tempsDeResolution.remove(tempsMin);
+            tempsDeResolution.remove(tempsMax);
+            DecimalFormat df = new DecimalFormat("###.###");
+            double avg = tempsDeResolution.stream().mapToDouble(x -> x).average().getAsDouble();
+//            avg = Double.parseDouble(df.format(avg));
+
+//            System.out.println("avg="+df.format(avg)+" "+"min="+tempsMin+" max="+tempsMax);
         }
 
 
