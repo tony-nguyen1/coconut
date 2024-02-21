@@ -1,5 +1,7 @@
 package org.chocosolver.parser.xcsp;
 
+import org.chocosolver.solver.search.strategy.strategy.AbstractStrategy;
+
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -30,7 +32,9 @@ public class LanceurCSPs {
         for (String aPath : filesFullPath) {
             args = new String[]{"-ansi","--log-level","SILENT","-csv",aPath};
 //            System.out.println(Arrays.stream(args).collect(Collectors.toList()));
-            System.out.println(aPath);
+            StringBuilder monStringBuilder = new StringBuilder();
+            monStringBuilder.append(getNetworkName(aPath));
+//            System.out.println(getNetworkName(aPath));
             ArrayList<Double> tempsDeResolution = new ArrayList<>(5);
             for (int i=0;i<5;i++) {
                 tempsDeResolution.add(Double.valueOf(LanceurCSP.run(args)[0]));
@@ -43,9 +47,19 @@ public class LanceurCSPs {
             double avg = tempsDeResolution.stream().mapToDouble(x -> x).average().getAsDouble();
 //            avg = Double.parseDouble(df.format(avg));
 
+            monStringBuilder.append(";");
+            monStringBuilder.append(df.format(avg));
+            System.out.println(monStringBuilder.toString());
+
 //            System.out.println("avg="+df.format(avg)+" "+"min="+tempsMin+" max="+tempsMax);
         }
 
 
+    }
+
+    private static String getNetworkName(String absolutePath) {
+        int i = absolutePath.lastIndexOf(File.separator)+1;
+        int ii = absolutePath.lastIndexOf(".xml");
+        return absolutePath.substring(i,ii);
     }
 }

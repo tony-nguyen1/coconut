@@ -39,6 +39,7 @@ public class LanceurCSP {
         // reset du stdout
         System.setOut(stdout);
 //        System.out.println(baos.toString());
+//        System.out.println(model.getName());
 
 //        String PATH_LINUX = "/root/with space/subDir/myFile.linux";
 //        int index = PATH_LINUX.lastIndexOf(File.separator);
