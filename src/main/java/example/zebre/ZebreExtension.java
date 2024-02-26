@@ -2,7 +2,30 @@ package example.zebre;
 
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.extension.Tuples;
+import org.chocosolver.solver.search.limits.ICounter;
+import org.chocosolver.solver.search.limits.NodeCounter;
+import org.chocosolver.solver.search.loop.monitors.IMonitorRestart;
+import org.chocosolver.solver.search.loop.monitors.SearchMonitorList;
+import org.chocosolver.solver.search.restart.LinearCutoff;
+import org.chocosolver.solver.search.strategy.Search;
+import org.chocosolver.solver.search.strategy.assignments.DecisionOperatorFactory;
+import org.chocosolver.solver.search.strategy.decision.Decision;
+import org.chocosolver.solver.search.strategy.decision.IntDecision;
+import org.chocosolver.solver.search.strategy.selectors.values.IntDomainMin;
+import org.chocosolver.solver.search.strategy.selectors.values.SetDomainMin;
+import org.chocosolver.solver.search.strategy.selectors.variables.AbstractCriterionBasedVariableSelector;
+import org.chocosolver.solver.search.strategy.selectors.variables.CustomDomOverWDeg;
+import org.chocosolver.solver.search.strategy.selectors.variables.DomOverWDeg;
+import org.chocosolver.solver.search.strategy.selectors.variables.ImpactBased;
+import org.chocosolver.solver.search.strategy.strategy.AbstractStrategy;
 import org.chocosolver.solver.variables.IntVar;
+import org.chocosolver.solver.variables.SetVar;
+import org.chocosolver.solver.variables.Variable;
+import org.chocosolver.util.PoolManager;
+import org.chocosolver.util.criteria.LongCriterion;
+import org.chocosolver.util.iterators.IntVarValueIterator;
+
+import java.util.Iterator;
 
 
 public class ZebreExtension {
@@ -18,7 +41,18 @@ public class ZebreExtension {
 		IntVar gre = model.intVar("Green", 1, 5); 
 		IntVar ivo = model.intVar("Ivory", 1, 5);         
 		IntVar red = model.intVar("Red", 1, 5);         
-		IntVar yel = model.intVar("Yellow", 1, 5);   
+		IntVar yel = model.intVar("Yellow", 1, 5);
+
+        System.out.println("All the values of blu");
+        Iterator<Integer> myIterator = new IntVarValueIterator(blu);
+        System.out.println(myIterator.hasNext());
+        while(myIterator.hasNext()) {
+            System.out.println(myIterator.next());
+        }
+        blu.forEachIntVar(x -> System.out.println(x));
+        for (Integer i : blu) {
+            System.out.println(i);
+        }
 
 		IntVar eng = model.intVar("English", 1, 5);         
 		IntVar jap = model.intVar("Japanese", 1, 5);         
@@ -32,7 +66,7 @@ public class ZebreExtension {
 		IntVar tea = model.intVar("Tea", 1, 5);         
 		IntVar wat = model.intVar("Water", 1, 5);         
 		
-	    IntVar dog = model.intVar("Dog", 1, 5);         
+	    IntVar dog = model.intVar("Dog", 1, 5);
 	    IntVar fox = model.intVar("Fox", 1, 5);         
 	    IntVar hor = model.intVar("Horse", 1, 5);         
 	    IntVar sna = model.intVar("Snail", 1, 5);         
@@ -42,7 +76,24 @@ public class ZebreExtension {
 	    IntVar koo = model.intVar("Kool", 1, 5);         
 	    IntVar luc = model.intVar("Lucky Strike", 1, 5);         
 	    IntVar old = model.intVar("Old Gold", 1, 5);         
-	    IntVar par = model.intVar("Parliament", 1, 5);         
+	    IntVar par = model.intVar("Parliament", 1, 5);
+
+//        che.
+
+        for (Variable v : model.getVars()) {
+            if (!v.isInstantiated()) {
+//                trouveUn = true;
+                System.out.println(v.getName()+" n'est pas instancié!!!!!!!!!!!!!!!!!!!!!!!!!");
+            }
+        }
+
+        IntVar[] tabIntVar = new IntVar[]{
+                blu,gre,ivo,red,yel,
+                eng,jap,nor,spa,ukr,
+                cof,mil,ora,tea,wat,
+                dog,fox,hor,sna,zeb,
+                che,koo,luc,old,par
+        };
 
 	    
 	    // Création des contraintes
@@ -142,29 +193,101 @@ public class ZebreExtension {
         model.table(new IntVar[]{jap,par}, new Tuples(new int[][]{{1,1},{2,2},{3,3},{4,4},{5,5}},true)).post();
         //C15
         model.table(new IntVar[]{nor,blu}, new Tuples(new int[][]{{1,2},{2,1},{2,3},{3,2},{3,4},{4,3},{4,5}},true)).post();
+        model.table(new IntVar[]{nor,blu}, new Tuples(new int[][]{{1,2},{2,1},{2,3},{3,2},{3,4},{4,3},{4,5}},true)).post();
+
 
 
         // Affichage du réseau de contraintes créé
         System.out.println("*** Réseau Initial ***");
         System.out.println(model);
-        
 
+//        model.getSolver().setSearch(new AbstractStrategy<IntVar>(tabIntVar) {
+//            // enables to recycle decision objects (good practice)
+//            PoolManager<IntDecision> pool = new PoolManager();
+//            @Override
+//            public Decision getDecision() {
+//                IntDecision d = pool.getE();
+//                if(d==null) d = new IntDecision(pool);
+//                IntVar next = null;
+//                for(IntVar v:vars){
+//                    if(!v.isInstantiated()){
+//                        next = v; break;
+//                    }
+//                }
+//                if(next == null){
+//                    return null;
+//                }else {
+//                    // next decision is assigning nextVar to its lower bound
+//                    d.set(next,next.getLB(), DecisionOperatorFactory.makeIntEq());//fixme la doc est pas à jour
+//                    return d;
+//                }
+//            }
+//        });
+
+
+
+        // Désactiver les redémarrages
+//        model.getSolver().plugMonitor((IMonitorRestart) () -> {
+//            // Ne rien faire dans cette méthode pour désactiver les redémarrages
+//        });
+
+
+        // Les heuristiques de bases
+//        model.getSolver().setSearch(Search.domOverWDegSearch(tabIntVar));
+//        model.getSolver().setSearch(Search.domOverWDegRefSearch(tabIntVar));
+//        model.getSolver().setSearch(Search.activityBasedSearch(tabIntVar));
+//        model.getSolver().setSearch(Search.conflictHistorySearch(tabIntVar));
+//        model.getSolver().setSearch(Search.randomSearch(tabIntVar,0));
+//        model.getSolver().setSearch(new ImpactBased(tabIntVar,null,0,0,0,0,true));
+
+        AbstractStrategy<IntVar> maStrat = Search.intVarSearch(new CustomDomOverWDeg<>(tabIntVar, 0), new IntDomainMin(), tabIntVar);
+//        model.getSolver().setSearch(maStrat);
+
+
+
+        // activation print sol quand trouvé
+        model.getSolver().showSolutions();
+
+        // activation print décision [1/2] affectation  [2/2] refutation
+        model.getSolver().showDecisions();
+
+        LongCriterion longCriterion = ICounter.Impl.None;
+//        model.getSolver().setRestarts(longCriterion, new LinearCutoff(Long.MAX_VALUE) {
+//            @Override
+//            public long getNextCutoff() {
+//                return Long.MAX_VALUE;
+//            }
+//
+//        },0);
+
+        model.getSolver().setGeometricalRestart(1000,2,new NodeCounter(model,1000),0);//fixme ça marche pas
+
+        System.out.println("dom="+blu.getDomainSize());
         // Calcul de la première solution
         if(model.getSolver().solve()) {
-        	System.out.println("\n\n*** Première solution ***");        
-        	System.out.println(model);
+//        	System.out.println("\n\n*** Première solution ***");
+//        	System.out.println(model);
         }
 
-        
-    	// Calcul de toutes les solutions
-    	System.out.println("\n\n*** Autres solutions ***");
-        while(model.getSolver().solve()) {
-            System.out.println("Sol "+ model.getSolver().getSolutionCount()+"\n"+model);
-	    }
+        // var\int refutation   var=int affectation
+        System.out.println(model.getSolver().getDecisionPath());
 
-        
+
+
+        // Calcul de toutes les solutions
+//    	System.out.println("\n\n*** Autres solutions ***");
+//        while(model.getSolver().solve()) {
+//            System.out.println("Sol "+ model.getSolver().getSolutionCount()+"\n"+model);
+//	    }
+
+
         // Affichage de l'ensemble des caractéristiques de résolution
-      	System.out.println("\n\n*** Bilan ***");        
+        System.out.println("\n\n*** Bilan ***");
         model.getSolver().printStatistics();
+
+        System.out.println("solFound;nbSol;readingTime;time;timeToBestSol;hasObjective;nbNoeuds;nbBacktrack;nbBackjump;nbFail;nbRestart");
+        System.out.println(model.getSolver().toCSV());
+        System.out.println(model.getSolver().getSearch().getClass());
+
 	}
 }
