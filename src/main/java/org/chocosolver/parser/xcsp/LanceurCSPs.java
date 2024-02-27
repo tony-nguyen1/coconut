@@ -39,6 +39,11 @@ public class LanceurCSPs {
         String contents[] = directoryPath.list();
         ArrayList<String> filesBaseName = new ArrayList<>(Arrays.asList(contents));
         ArrayList<String> filesFullPath = Arrays.stream(contents).map(nom -> dirPath+File.separator+nom).collect(Collectors.toCollection(ArrayList::new));
+        Collections.sort(filesFullPath);
+
+        for (String s : filesFullPath) {
+            System.out.println(s);
+        }
 
 
         for (String aPath : filesFullPath) {
