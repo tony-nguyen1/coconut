@@ -102,6 +102,7 @@ public class LanceurCSP {
         }
 
 
+        model.getSolver().clearRestarter();
         xscp.solve();
 
 

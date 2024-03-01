@@ -43,15 +43,15 @@ public class ZebreExtension {
 		IntVar red = model.intVar("Red", 1, 5);         
 		IntVar yel = model.intVar("Yellow", 1, 5);
 
-        System.out.println("All the values of blu");
+//        System.out.println("All the values of blu");
         Iterator<Integer> myIterator = new IntVarValueIterator(blu);
-        System.out.println(myIterator.hasNext());
+//        System.out.println(myIterator.hasNext());
         while(myIterator.hasNext()) {
-            System.out.println(myIterator.next());
+//            System.out.println(myIterator.next());
         }
-        blu.forEachIntVar(x -> System.out.println(x));
+//        blu.forEachIntVar(x -> System.out.println(x));
         for (Integer i : blu) {
-            System.out.println(i);
+//            System.out.println(i);
         }
 
 		IntVar eng = model.intVar("English", 1, 5);         
@@ -83,7 +83,7 @@ public class ZebreExtension {
         for (Variable v : model.getVars()) {
             if (!v.isInstantiated()) {
 //                trouveUn = true;
-                System.out.println(v.getName()+" n'est pas instancié!!!!!!!!!!!!!!!!!!!!!!!!!");
+//                System.out.println(v.getName()+" n'est pas instancié!!!!!!!!!!!!!!!!!!!!!!!!!");
             }
         }
 
@@ -231,11 +231,12 @@ public class ZebreExtension {
 //            // Ne rien faire dans cette méthode pour désactiver les redémarrages
 //        });
 
+        model.getSolver().clearRestarter();
 
         // Les heuristiques de bases
 //        model.getSolver().setSearch(Search.domOverWDegSearch(tabIntVar));
 //        model.getSolver().setSearch(Search.domOverWDegRefSearch(tabIntVar));
-//        model.getSolver().setSearch(Search.activityBasedSearch(tabIntVar));
+        model.getSolver().setSearch(Search.activityBasedSearch(tabIntVar));
 //        model.getSolver().setSearch(Search.conflictHistorySearch(tabIntVar));
 //        model.getSolver().setSearch(Search.randomSearch(tabIntVar,0));
 //        model.getSolver().setSearch(new ImpactBased(tabIntVar,null,0,0,0,0,true));
@@ -243,6 +244,7 @@ public class ZebreExtension {
         AbstractStrategy<IntVar> maStrat = Search.intVarSearch(new CustomDomOverWDeg<>(tabIntVar, 0), new IntDomainMin(), tabIntVar);
 //        model.getSolver().setSearch(maStrat);
 
+        model.getSolver().clearRestarter();
 
 
         // activation print sol quand trouvé
@@ -262,12 +264,14 @@ public class ZebreExtension {
 
         model.getSolver().setGeometricalRestart(1000,2,new NodeCounter(model,1000),0);//fixme ça marche pas
 
-        System.out.println("dom="+blu.getDomainSize());
+//        System.out.println("dom="+blu.getDomainSize());
         // Calcul de la première solution
+        model.getSolver().clearRestarter();
         if(model.getSolver().solve()) {
 //        	System.out.println("\n\n*** Première solution ***");
 //        	System.out.println(model);
         }
+//        model.getSolver().clearRestarter();
 
         // var\int refutation   var=int affectation
         System.out.println(model.getSolver().getDecisionPath());
@@ -288,6 +292,6 @@ public class ZebreExtension {
         System.out.println("solFound;nbSol;readingTime;time;timeToBestSol;hasObjective;nbNoeuds;nbBacktrack;nbBackjump;nbFail;nbRestart");
         System.out.println(model.getSolver().toCSV());
         System.out.println(model.getSolver().getSearch().getClass());
-
+//        System.out.println(model.getSolver().getRestarter().toString());
 	}
 }
