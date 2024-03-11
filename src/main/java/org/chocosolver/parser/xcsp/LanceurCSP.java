@@ -1,5 +1,8 @@
 package org.chocosolver.parser.xcsp;
 
+import fr.umontpellier.etu.heuristique.variables.DegHeuristique;
+import fr.umontpellier.etu.heuristique.variables.DomHeuristique;
+import fr.umontpellier.etu.heuristique.variables.MaxDomHeuristique;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.search.strategy.Search;
 import org.chocosolver.solver.search.strategy.selectors.values.IntDomainMin;
@@ -29,20 +32,20 @@ public class LanceurCSP {
 
     public static enum ChosenHeuristic {
         DEFAULT,//LastConflict
-        DOM,
-        MAXDOM,
+        MINDDOM,
+        MAXDDOM,
         DOMOVERWDEG,
         DOMOVERWDEGREF,
         ACTIVITY,
         IMPACT,
         CHS,
-        RANDOM
+        MINDOM, MAXDOM, RANDOM
     }
 
     public static void main(String[] args) throws Exception {
         String param[] = new String[]{"/home/tony/M1/coconut/instances/Queens/Queens-m1-s1/Queens-0020-m1.xml.lzma"};
         System.out.print(param[0]+";");
-        ChosenHeuristic h = ChosenHeuristic.DOM;
+        ChosenHeuristic h = ChosenHeuristic.MINDDOM;
         System.out.println(run(param,h)[0]);
     }
     public static String[] run(String[] args,ChosenHeuristic chosenHeuristic) throws Exception {
@@ -86,10 +89,10 @@ public class LanceurCSP {
             case CHS:
                 model.getSolver().setSearch(Search.conflictHistorySearch(livars.toArray(new IntVar[livars.size()])));
                 break;
-            case DOM: // minddom
+            case MINDDOM: // minddom
                 model.getSolver().setSearch(Search.intVarSearch(new GeneralizedMinDomVarSelector<>(),new IntDomainMin(), tabIntVar));
                 break;
-            case MAXDOM: // maxddom
+            case MAXDDOM: // maxddom
                 model.getSolver().setSearch(Search.intVarSearch(new GeneralizedMinDomVarSelector<>(false),new IntDomainMin(), tabIntVar));
             case IMPACT:
                 model.getSolver().setSearch(new ImpactBased(tabIntVar,null,0,0,0,0,true));
@@ -105,6 +108,10 @@ public class LanceurCSP {
                 break;
             case RANDOM:
                 model.getSolver().setSearch(Search.randomSearch(tabIntVar,0));
+            case MINDOM:
+                model.getSolver().setSearch(Search.intVarSearch(new DomHeuristique<>(tabIntVar), new IntDomainMin(),tabIntVar));
+            case MAXDOM:
+                model.getSolver().setSearch(Search.intVarSearch(new MaxDomHeuristique<>(tabIntVar), new IntDomainMin(),tabIntVar));
         }
 
 

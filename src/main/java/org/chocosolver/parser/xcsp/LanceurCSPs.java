@@ -16,12 +16,15 @@ public class LanceurCSPs {
     private static final ArrayList<LanceurCSP.ChosenHeuristic> heuristicList;
     static {
         LanceurCSP.ChosenHeuristic arrayChosenHeuristic[] = new LanceurCSP.ChosenHeuristic[]{
-//                LanceurCSP.ChosenHeuristic.DOM,
                 LanceurCSP.ChosenHeuristic.DOMOVERWDEG,
+                LanceurCSP.ChosenHeuristic.DOMOVERWDEGREF,
                 LanceurCSP.ChosenHeuristic.CHS,
                 LanceurCSP.ChosenHeuristic.IMPACT,
                 LanceurCSP.ChosenHeuristic.RANDOM,
-                LanceurCSP.ChosenHeuristic.DOM,
+                LanceurCSP.ChosenHeuristic.MINDDOM,
+                LanceurCSP.ChosenHeuristic.MAXDDOM,
+                LanceurCSP.ChosenHeuristic.MINDOM,
+                LanceurCSP.ChosenHeuristic.MAXDOM,
         };
         heuristicList = new ArrayList<>(Arrays.asList(arrayChosenHeuristic));
     }
