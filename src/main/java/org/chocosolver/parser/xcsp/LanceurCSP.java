@@ -30,11 +30,13 @@ public class LanceurCSP {
     public static enum ChosenHeuristic {
         DEFAULT,//LastConflict
         DOM,
+        MAXDOM,
         DOMOVERWDEG,
         DOMOVERWDEGREF,
         ACTIVITY,
         IMPACT,
-        CHS
+        CHS,
+        RANDOM
     }
 
     public static void main(String[] args) throws Exception {
@@ -84,9 +86,11 @@ public class LanceurCSP {
             case CHS:
                 model.getSolver().setSearch(Search.conflictHistorySearch(livars.toArray(new IntVar[livars.size()])));
                 break;
-            case DOM:
-                model.getSolver().setSearch(Search.intVarSearch(new GeneralizedMinDomVarSelector<>(false),new IntDomainMin(), tabIntVar));
+            case DOM: // minddom
+                model.getSolver().setSearch(Search.intVarSearch(new GeneralizedMinDomVarSelector<>(),new IntDomainMin(), tabIntVar));
                 break;
+            case MAXDOM: // maxddom
+                model.getSolver().setSearch(Search.intVarSearch(new GeneralizedMinDomVarSelector<>(false),new IntDomainMin(), tabIntVar));
             case IMPACT:
                 model.getSolver().setSearch(new ImpactBased(tabIntVar,null,0,0,0,0,true));
                 break;
@@ -99,15 +103,19 @@ public class LanceurCSP {
             case DOMOVERWDEGREF:
                 model.getSolver().setSearch(Search.domOverWDegRefSearch(tabIntVar));
                 break;
+            case RANDOM:
+                model.getSolver().setSearch(Search.randomSearch(tabIntVar,0));
         }
 
 
         model.getSolver().clearRestarter();
+        model.getSolver().limitTime("1h");
         xscp.solve();
 
 
         // reset du stdout
         System.setOut(stdout);
+//        System.out.println(baos);
 //        System.out.println(chosenHeuristic);
 //        System.out.println(baos.toString());
 //        System.out.println(model.getName());
@@ -123,7 +131,13 @@ public class LanceurCSP {
 
         String nomStrat = getStrategyName(xscp.getModel().getSolver().getSearch());
 //        System.out.println(nomStrat);
-        return new String[]{String.valueOf(model.getSolver().getTimeCount())};
+//        model.getSolver().printStatistics();
+        String nbSol = String.valueOf(model.getSolver().getSolutionCount());
+        String nbVars = String.valueOf(model.getNbVars());
+        String nbCstrs = String.valueOf(model.getNbCstrs());
+        String temps = String.valueOf(model.getSolver().getTimeCount());
+
+        return new String[]{nbSol,nbVars,nbCstrs,temps};
 
     }
 

@@ -248,7 +248,7 @@ public class ZebreExtension {
 
 
         // activation print sol quand trouvé
-        model.getSolver().showSolutions();
+//        model.getSolver().showSolutions();
 
         // activation print décision [1/2] affectation  [2/2] refutation
         model.getSolver().showDecisions();
