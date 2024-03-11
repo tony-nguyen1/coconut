@@ -1,5 +1,6 @@
 package example.zebre;
 
+import fr.umontpellier.etu.heuristique.variables.DomHeuristique;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.extension.Tuples;
 import org.chocosolver.solver.search.limits.ICounter;
@@ -241,8 +242,8 @@ public class ZebreExtension {
 //        model.getSolver().setSearch(Search.randomSearch(tabIntVar,0));
 //        model.getSolver().setSearch(new ImpactBased(tabIntVar,null,0,0,0,0,true));
 
-        AbstractStrategy<IntVar> maStrat = Search.intVarSearch(new CustomDomOverWDeg<>(tabIntVar, 0), new IntDomainMin(), tabIntVar);
-//        model.getSolver().setSearch(maStrat);
+        AbstractStrategy<IntVar> maStrat = Search.intVarSearch(new DomHeuristique<>(tabIntVar), new IntDomainMin(), tabIntVar);
+        model.getSolver().setSearch(maStrat);
 
         model.getSolver().clearRestarter();
 
@@ -262,7 +263,9 @@ public class ZebreExtension {
 //
 //        },0);
 
-        model.getSolver().setGeometricalRestart(1000,2,new NodeCounter(model,1000),0);//fixme ça marche pas
+
+
+        //model.getSolver().setGeometricalRestart(1000,2,new NodeCounter(model,1000),0);//fixme ça marche pas
 
 //        System.out.println("dom="+blu.getDomainSize());
         // Calcul de la première solution
