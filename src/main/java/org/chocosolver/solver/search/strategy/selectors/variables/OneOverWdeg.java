@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
  * @since 26/02/2020.
  */
 
-public class CaCd<V extends Variable> implements VariableSelector<V>,
+public class OneOverWdeg<V extends Variable> implements VariableSelector<V>,
         IVariableMonitor<V>, IMonitorContradiction, IMonitorRestart {
 
     /**
@@ -127,7 +127,7 @@ public class CaCd<V extends Variable> implements VariableSelector<V>,
         }
     };
 
-    public CaCd(V[] vars, long seed, int flush) {
+    public OneOverWdeg(V[] vars, long seed, int flush) {
         this.random = new java.util.Random(seed);
         this.solver = vars[0].getModel().getSolver();
         this.environment = vars[0].getModel().getEnvironment();
@@ -135,7 +135,9 @@ public class CaCd<V extends Variable> implements VariableSelector<V>,
         this.flushThs = flush;
     }
 
-    public CaCd(V[] vars) {this(vars, 0, Integer.MAX_VALUE);}
+    public OneOverWdeg(V[] vars){
+        this(vars, 0, Integer.MAX_VALUE);
+    }
 
 
 
@@ -151,7 +153,7 @@ public class CaCd<V extends Variable> implements VariableSelector<V>,
         for (int idx = 0; idx <= to; idx++) {
             int domSize = vars[idx].getDomainSize();
             if (domSize > 1) {
-                double weight = domSize / weight(vars[idx]);
+                double weight = 1.0d / weight(vars[idx]);
                 //System.out.printf("%3f%n", weight);
                 if (weight < w) {
                     bests.resetQuick();
