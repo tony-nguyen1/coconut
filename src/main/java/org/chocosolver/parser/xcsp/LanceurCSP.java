@@ -2,12 +2,12 @@ package org.chocosolver.parser.xcsp;
 
 import fr.umontpellier.etu.heuristique.variables.DegHeuristique;
 import fr.umontpellier.etu.heuristique.variables.DomHeuristique;
+import fr.umontpellier.etu.heuristique.variables.LexHeuristique;
 import fr.umontpellier.etu.heuristique.variables.MaxDomHeuristique;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.search.strategy.Search;
 import org.chocosolver.solver.search.strategy.selectors.values.IntDomainMin;
-import org.chocosolver.solver.search.strategy.selectors.variables.GeneralizedMinDomVarSelector;
-import org.chocosolver.solver.search.strategy.selectors.variables.ImpactBased;
+import org.chocosolver.solver.search.strategy.selectors.variables.*;
 import org.chocosolver.solver.search.strategy.strategy.AbstractStrategy;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.solver.variables.Variable;
@@ -39,7 +39,15 @@ public class LanceurCSP {
         ACTIVITY,
         IMPACT,
         CHS,
-        MINDOM, MAXDOM, RANDOM
+        MINDOM, MAXDOM, RANDOM,
+        //
+        CACD,
+        DDEG,
+        DOMDDEG,
+        DOMDEG,
+        ONEOVERWDEG,
+        DEG,
+        LEX
     }
 
     public static void main(String[] args) throws Exception {
@@ -98,7 +106,8 @@ public class LanceurCSP {
                 model.getSolver().setSearch(new ImpactBased(tabIntVar,null,0,0,0,0,true));
                 break;
             case ACTIVITY:
-                model.getSolver().setSearch(Search.activityBasedSearch(tabIntVar));
+                //model.getSolver().setSearch(Search.activityBasedSearch(tabIntVar));//FIXME
+                model.getSolver().setSearch(Search.intVarSearch(new ActivityBasedSearch<>(model,0,1), new IntDomainMin(), tabIntVar));
                 break;
             case DOMOVERWDEG:
                 model.getSolver().setSearch(Search.domOverWDegSearch(tabIntVar));
@@ -108,10 +117,34 @@ public class LanceurCSP {
                 break;
             case RANDOM:
                 model.getSolver().setSearch(Search.randomSearch(tabIntVar,0));
+                break;
             case MINDOM:
                 model.getSolver().setSearch(Search.intVarSearch(new DomHeuristique<>(tabIntVar), new IntDomainMin(),tabIntVar));
+                break;
             case MAXDOM:
                 model.getSolver().setSearch(Search.intVarSearch(new MaxDomHeuristique<>(tabIntVar), new IntDomainMin(),tabIntVar));
+                break;
+            case CACD:
+                model.getSolver().setSearch(Search.intVarSearch(new CaCd<>(tabIntVar), new IntDomainMin(), tabIntVar));
+                break;
+            case DDEG:
+                model.getSolver().setSearch(Search.intVarSearch(new Ddeg<>(), new IntDomainMin(), tabIntVar));
+                break;
+            case DOMDDEG:
+                model.getSolver().setSearch(Search.intVarSearch(new DomDdeg<>(), new IntDomainMin(), tabIntVar));
+                break;
+            case DOMDEG:
+                model.getSolver().setSearch(Search.intVarSearch(new DomDeg<>(), new IntDomainMin(), tabIntVar));
+                break;
+            case ONEOVERWDEG:
+                model.getSolver().setSearch(Search.intVarSearch(new OneOverWdeg<>(tabIntVar), new IntDomainMin(), tabIntVar));
+                break;
+            case DEG:
+                model.getSolver().setSearch(Search.intVarSearch(new DegHeuristique(model), new IntDomainMin(), tabIntVar));
+                break;
+            case LEX:
+                model.getSolver().setSearch(Search.intVarSearch(new LexHeuristique<>(tabIntVar), new IntDomainMin(), tabIntVar));
+                break;
         }
 
 

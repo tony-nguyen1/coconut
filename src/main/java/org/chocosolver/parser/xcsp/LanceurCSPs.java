@@ -25,6 +25,14 @@ public class LanceurCSPs {
                 LanceurCSP.ChosenHeuristic.MAXDDOM,
                 LanceurCSP.ChosenHeuristic.MINDOM,
                 LanceurCSP.ChosenHeuristic.MAXDOM,
+                LanceurCSP.ChosenHeuristic.ACTIVITY,
+                LanceurCSP.ChosenHeuristic.IMPACT,
+                LanceurCSP.ChosenHeuristic.CHS,
+                LanceurCSP.ChosenHeuristic.CACD,
+                LanceurCSP.ChosenHeuristic.DDEG,
+                LanceurCSP.ChosenHeuristic.DOMDDEG,
+                LanceurCSP.ChosenHeuristic.DOMDEG,
+                LanceurCSP.ChosenHeuristic.ONEOVERWDEG
         };
         heuristicList = new ArrayList<>(Arrays.asList(arrayChosenHeuristic));
     }
