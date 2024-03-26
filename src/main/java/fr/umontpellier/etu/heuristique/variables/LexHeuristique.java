@@ -4,9 +4,7 @@ import org.chocosolver.solver.search.strategy.selectors.variables.VariableEvalua
 import org.chocosolver.solver.search.strategy.selectors.variables.VariableSelector;
 import org.chocosolver.solver.variables.Variable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.xcsp.common.Utilities.swap;
 
@@ -15,11 +13,10 @@ public class LexHeuristique <V extends Variable> implements VariableSelector<V>,
     private final Map<V,Integer> varsPriority = new HashMap<>();
 
     public LexHeuristique(V[] variables){
-        V[] sortedListVars = variables.clone();
-        sortingAListOfV(sortedListVars);
-
-        for (int idx=0; idx<sortedListVars.length; idx++){
-            varsPriority.put(sortedListVars[idx],idx);
+        List<V> test = Arrays.asList(variables);
+        Collections.sort(test, new VComparator());
+        for (int i = 0; i < test.size(); i++) {
+            varsPriority.put(test.get(i),i);
         }
     }
 
@@ -39,8 +36,8 @@ public class LexHeuristique <V extends Variable> implements VariableSelector<V>,
                 min_idx = varsPriority.get(var);
             }
         }
-        if (the_chosen_one != null)
-            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+the_chosen_one.getName());
+        //if (the_chosen_one != null)
+        //    System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+the_chosen_one.getName());
         return the_chosen_one;
     }
 
@@ -54,7 +51,7 @@ public class LexHeuristique <V extends Variable> implements VariableSelector<V>,
         VariableSelector.super.remove();
     }
 
-    public void sortingAListOfV(V[] listOfVToSort){
+    /*public void sortingAListOfV(V[] listOfVToSort){
         for (int idx=0; idx<listOfVToSort.length-1; idx++){
             for (int jdx=idx+1; jdx< listOfVToSort.length; jdx++){
                 String i_var_name = listOfVToSort[idx].getName();
@@ -77,6 +74,13 @@ public class LexHeuristique <V extends Variable> implements VariableSelector<V>,
                         break;
                 }
             }
+        }
+    }*/
+
+    class VComparator implements Comparator<V>{
+        @Override
+        public int compare(V o1, V o2) {
+            return o1.getName().compareTo(o2.getName());
         }
     }
 }

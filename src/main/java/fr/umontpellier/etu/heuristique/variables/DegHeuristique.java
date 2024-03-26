@@ -17,6 +17,7 @@ public class DegHeuristique <V extends Variable> implements VariableSelector<V>,
     public DegHeuristique(Model model){
         for (Variable var: model.getVars()){
             varsDeg.put(var,0);
+            System.out.println("@@@@@@@@@@@@@@@"+var.getNbProps());
         }
         
         Constraint[] constraints = model.getCstrs();
@@ -62,3 +63,6 @@ public class DegHeuristique <V extends Variable> implements VariableSelector<V>,
         VariableSelector.super.remove();
     }
 }
+
+// TODO
+//  A VOIR SI IL N'EXISTE PAS UN MEILLEUR MOYEN DE CONNAITRE LE DEG DES VARIBALES
