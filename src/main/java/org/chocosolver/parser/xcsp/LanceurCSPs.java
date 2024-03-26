@@ -11,14 +11,20 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class LanceurCSPs {
-    private static final int NB_REPETITIONS = 3;
+    private static final int NB_REPETITIONS = 1;
     private static final DecimalFormat df = new DecimalFormat("###.####");
     private static final ArrayList<LanceurCSP.ChosenHeuristic> heuristicList;
     static {
         LanceurCSP.ChosenHeuristic arrayChosenHeuristic[] = new LanceurCSP.ChosenHeuristic[]{
-//                LanceurCSP.ChosenHeuristic.DOM,
                 LanceurCSP.ChosenHeuristic.DOMOVERWDEG,
-                LanceurCSP.ChosenHeuristic.CHS
+                LanceurCSP.ChosenHeuristic.DOMOVERWDEGREF,
+                LanceurCSP.ChosenHeuristic.CHS,
+                LanceurCSP.ChosenHeuristic.IMPACT,
+                LanceurCSP.ChosenHeuristic.RANDOM,
+                LanceurCSP.ChosenHeuristic.MINDDOM,
+                LanceurCSP.ChosenHeuristic.MAXDDOM,
+                LanceurCSP.ChosenHeuristic.MINDOM,
+                LanceurCSP.ChosenHeuristic.MAXDOM,
         };
         heuristicList = new ArrayList<>(Arrays.asList(arrayChosenHeuristic));
     }
@@ -39,25 +45,45 @@ public class LanceurCSPs {
         String contents[] = directoryPath.list();
         ArrayList<String> filesBaseName = new ArrayList<>(Arrays.asList(contents));
         ArrayList<String> filesFullPath = Arrays.stream(contents).map(nom -> dirPath+File.separator+nom).collect(Collectors.toCollection(ArrayList::new));
+        Collections.sort(filesFullPath);
+
+        for (String s : filesFullPath) {
+            System.out.println(s);
+        }
+
+        StringBuilder monStringBuilder = new StringBuilder();
+        monStringBuilder.append("nom;");
+        for (Enum h : heuristicList) {
+            System.out.println(h);
+            monStringBuilder.append("nbSol"+h+";");
+            monStringBuilder.append("nbVars"+h+";");
+            monStringBuilder.append("nbCstrs"+h+";");
+            monStringBuilder.append("temps"+h+";");
+        }
+        System.out.println(monStringBuilder);
 
 
         for (String aPath : filesFullPath) {
             args = new String[]{"-ansi","--log-level","SILENT","-csv",aPath};//fixme la plupart des args sert à rien vue que je print rien dans LanceurCSP
-            StringBuilder monStringBuilder = new StringBuilder();
+            monStringBuilder = new StringBuilder();
             monStringBuilder.append(getNetworkName(aPath));
+            monStringBuilder.append(";");
 
             for (int indiceH=0; indiceH<heuristicList.size(); indiceH++) {
-                ArrayList<Double> tempsDeResolution = new ArrayList<>(NB_REPETITIONS);
-                String result[] = new String[2];
+                String result[];
                 LanceurCSP.ChosenHeuristic heuristicChoisit = heuristicList.get(indiceH);
 
-                for (int i=0;i<NB_REPETITIONS;i++) {
-                    result = LanceurCSP.run(args, heuristicList.get(indiceH));
-                    tempsDeResolution.add(Double.valueOf(result[0]));
-                }
+                result = LanceurCSP.run(args, heuristicChoisit);
 
+
+                monStringBuilder.append(result[0]);
                 monStringBuilder.append(";");
-                monStringBuilder.append(df.format(getAverage(tempsDeResolution)));
+                monStringBuilder.append(result[1]);
+                monStringBuilder.append(";");
+                monStringBuilder.append(result[2]);
+                monStringBuilder.append(";");
+                monStringBuilder.append(df.format(Double.valueOf(result[3])));
+                monStringBuilder.append(";");
             }
             System.out.println(monStringBuilder.toString());
         }
